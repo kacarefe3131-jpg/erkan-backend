@@ -14,33 +14,40 @@ def home():
 
 @app.post("/chat")
 def chat():
-    data = request.get_json(silent=True) or {}
-    message = data.get("message", "").strip()
+    try:
+        data = request.get_json(silent=True) or {}
+        message = data.get("message", "").strip()
 
-    if not message:
-        return jsonify({"error": "Mesaj boş olamaz."}), 400
+        if not message:
+            return jsonify({"error": "Mesaj boş olamaz."}), 400
 
-    response = client.responses.create(
-        model="gpt-5.6-luna",
-        input=[
-            {
-                "role": "system",
-                "content": (
-                    "Senin adın Erkan. "
-                    "Türkçe konuşan kişisel bir mobil asistansın. "
-                    "Doğal, kısa ve anlaşılır cevaplar ver."
-                )
-            },
-            {
-                "role": "user",
-                "content": message
-            }
-        ]
-    )
+        response = client.responses.create(
+            model="gpt-5.6-luna",
+            input=[
+                {
+                    "role": "system",
+                    "content": (
+                        "Senin adın Erkan. "
+                        "Türkçe konuşan kişisel bir mobil asistansın. "
+                        "Doğal, kısa ve anlaşılır cevaplar ver."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": message
+                }
+            ]
+        )
 
-    return jsonify({
-        "reply": response.output_text
-    })
+        return jsonify({
+            "reply": response.output_text
+        })
+
+    except Exception as e:
+        return jsonify({
+            "error": str(e)
+        }), 500
+
 
 if __name__ == "__main__":
     app.run(
