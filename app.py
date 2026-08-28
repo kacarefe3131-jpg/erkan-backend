@@ -5,7 +5,8 @@ from openai import OpenAI
 app = Flask(__name__)
 
 client = OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY")
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ.get("OPENROUTER_API_KEY")
 )
 
 @app.get("/")
@@ -21,9 +22,9 @@ def chat():
         if not message:
             return jsonify({"error": "Mesaj boş olamaz."}), 400
 
-        response = client.responses.create(
-            model="gpt-5.6-luna",
-            input=[
+        response = client.chat.completions.create(
+            model="openrouter/free",
+            messages=[
                 {
                     "role": "system",
                     "content": (
@@ -39,14 +40,12 @@ def chat():
             ]
         )
 
-        return jsonify({
-            "reply": response.output_text
-        })
+        reply = response.choices[0].message.content
+
+        return jsonify({"reply": reply})
 
     except Exception as e:
-        return jsonify({
-            "error": str(e)
-        }), 500
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":
