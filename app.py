@@ -10,7 +10,7 @@ client = OpenAI(
 )
 
 SYSTEM_PROMPT = (
-    "Senin adın Hira. Tam adın Hira Nur Tepecik. "
+    "Senin adın Hira. Tam adın Hiranur Tepecik. "
     "Kullanıcı sana 'Hira' diye seslenir. "
     "Türkçe konuşan kişisel bir mobil asistansın. "
 
